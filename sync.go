@@ -1,7 +1,7 @@
 package bernard
 
 import (
-	ds "github.com/m-rots/bernard/datastore"
+	ds "github.com/l3uddz/bernard/datastore"
 )
 
 // FullSync syncs the entire content of Drive to the datastore.

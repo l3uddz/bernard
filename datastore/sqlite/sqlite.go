@@ -8,15 +8,15 @@ import (
 	"fmt"
 	"strings"
 
-	ds "github.com/m-rots/bernard/datastore"
+	ds "github.com/l3uddz/bernard/datastore"
 
 	// database driver
-	_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 )
 
 // New returns a Bernard Datastore with a SQLite3 backend.
 func New(path string) (*Datastore, error) {
-	db, err := sql.Open("sqlite3", path)
+	db, err := sql.Open("sqlite", path)
 	if err != nil {
 		return nil, fmt.Errorf("open: %w", ds.ErrDatabase)
 	}
@@ -269,8 +269,7 @@ CREATE TABLE IF NOT EXISTS file (
 	"size" integer NOT NULL,
 	"md5" text NOT NULL,
 	"trashed" boolean NOT NULL,
-	PRIMARY KEY(id, drive),
-	FOREIGN KEY(parent, drive) REFERENCES folder(id, drive) DEFERRABLE INITIALLY IMMEDIATE
+	PRIMARY KEY(id, drive)
 );
 
 CREATE TABLE IF NOT EXISTS folder (
@@ -279,8 +278,7 @@ CREATE TABLE IF NOT EXISTS folder (
   "name" text NOT NULL,
   "trashed" boolean NOT NULL,
 	"parent" text,
-	PRIMARY KEY(id, drive),
-  FOREIGN KEY(parent, drive) REFERENCES folder(id, drive) DEFERRABLE INITIALLY IMMEDIATE
+	PRIMARY KEY(id, drive)
 );
 
 CREATE TABLE IF NOT EXISTS drive (

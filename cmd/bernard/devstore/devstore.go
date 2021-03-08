@@ -2,10 +2,10 @@ package devstore
 
 import (
 	// datastore interfaces
-	ds "github.com/m-rots/bernard/datastore"
+	ds "github.com/l3uddz/bernard/datastore"
 
 	// reference sqlite datastore
-	"github.com/m-rots/bernard/datastore/sqlite"
+	"github.com/l3uddz/bernard/datastore/sqlite"
 )
 
 // The Devstore extends the reference sqlite datastore by adding extra

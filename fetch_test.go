@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	ds "github.com/m-rots/bernard/datastore"
+	ds "github.com/l3uddz/bernard/datastore"
 )
 
 const (

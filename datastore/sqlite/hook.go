@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/m-rots/bernard"
-	ds "github.com/m-rots/bernard/datastore"
+	"github.com/l3uddz/bernard"
+	ds "github.com/l3uddz/bernard/datastore"
 )
 
 // The Difference contains all added, changes and removed files and folders

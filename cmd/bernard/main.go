@@ -7,10 +7,10 @@ import (
 	"os"
 	"reflect"
 
-	lowe "github.com/m-rots/bernard"
-	"github.com/m-rots/bernard/cmd/bernard/devstore"
-	ds "github.com/m-rots/bernard/datastore"
-	"github.com/m-rots/bernard/datastore/sqlite"
+	lowe "github.com/l3uddz/bernard"
+	"github.com/l3uddz/bernard/cmd/bernard/devstore"
+	ds "github.com/l3uddz/bernard/datastore"
+	"github.com/l3uddz/bernard/datastore/sqlite"
 	"github.com/m-rots/stubbs"
 )
 

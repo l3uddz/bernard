@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	ds "github.com/m-rots/bernard/datastore"
+	ds "github.com/l3uddz/bernard/datastore"
 )
 
 // Authenticator represents any struct which can create an access token on demand
