@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	ds "github.com/m-rots/bernard/datastore"
+	ds "github.com/l3uddz/bernard/datastore"
 )
 
 func TestDifferenceHook(t *testing.T) {

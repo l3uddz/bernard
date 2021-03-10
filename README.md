@@ -102,8 +102,6 @@ The `Difference` struct contains:
 
 The datastore is a core component of Bernard's operations. Bernard provides a reference implementation of a Datastore in the form of a SQLite database. This reference datastore can be expanded to allow other operations on the underlying `database/sql` interface.
 
-Please note that the reference SQLite datastore uses the CGO enabled package [go-sqlite3](https://github.com/mattn/go-sqlite3). This dependency affects cross-compilation.
-
 If SQLite is not your database of choice, feel free to open a pull request with support for another database such as MongoDB, Fauna or CockroachDB. I highly advise you to have a look at `datastore/datastore.go` and `datastore/sqlite/sqlite.go` files to get a feel for the operations the Datastore interface should perform.
 
 ### Authenticator
