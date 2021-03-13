@@ -34,7 +34,7 @@ func New(path string) (*Datastore, error) {
 		return nil, fmt.Errorf("%v: %w", err, ds.ErrDatabase)
 	}
 
-	if err := mg.Migrate(&migrations, "processor"); err != nil {
+	if err := mg.Migrate(&migrations, "bernard"); err != nil {
 		return nil, fmt.Errorf("%v: %w", err, ds.ErrDatabase)
 	}
 
@@ -49,7 +49,7 @@ func FromDB(db *sql.DB) (*Datastore, error) {
 		return nil, fmt.Errorf("%v: %w", err, ds.ErrDatabase)
 	}
 
-	if err := mg.Migrate(&migrations, "processor"); err != nil {
+	if err := mg.Migrate(&migrations, "bernard"); err != nil {
 		return nil, fmt.Errorf("%v: %w", err, ds.ErrDatabase)
 	}
 
