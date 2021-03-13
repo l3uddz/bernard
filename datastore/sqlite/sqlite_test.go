@@ -13,7 +13,7 @@ func setupTest(t *testing.T) *Datastore {
 
 	datastore, err := New(":memory:")
 	if err != nil {
-		t.Fatal("Could not create datastore")
+		t.Fatalf("Could not create datastore: %v", err)
 	}
 
 	return datastore
@@ -181,30 +181,6 @@ func TestFullSync(t *testing.T) {
 
 	var testCases = []test{
 		{
-			name: "invalid file parent -> data anomaly",
-			given: Given{
-				drive: drive,
-				files: []ds.File{
-					{ID: "A", Parent: "unknown parent"},
-				},
-			},
-			expected: Expected{
-				err: ds.ErrDataAnomaly,
-			},
-		},
-		{
-			name: "invalid folder parent -> data anomaly",
-			given: Given{
-				drive: drive,
-				folders: []ds.Folder{
-					{ID: "A", Parent: "unknown parent"},
-				},
-			},
-			expected: Expected{
-				err: ds.ErrDataAnomaly,
-			},
-		},
-		{
 			name: "all fields",
 			given: Given{
 				drive: drive,
@@ -343,83 +319,6 @@ func TestPartialSync(t *testing.T) {
 			},
 		},
 		{
-			name: "No data anomaly when all children get deleted",
-			err:  nil,
-			given: State{
-				drive: ds.Drive{
-					ID:        "tha drive",
-					PageToken: "old",
-					Name:      "Not a Shared Drive",
-				},
-				folders: []ds.Folder{
-					{ID: "A", Parent: "tha drive"},
-					{ID: "B", Parent: "A"},
-				},
-				files: []ds.File{
-					{ID: "Z", Parent: "A"},
-					{ID: "Y", Parent: "B"},
-				},
-			},
-			changes: Changed{
-				drive: ds.Drive{
-					ID:        "tha drive",
-					PageToken: "new",
-				},
-				removed: []string{"A", "B", "Z", "Y"},
-			},
-			expected: State{
-				drive: ds.Drive{
-					ID:        "tha drive",
-					PageToken: "new",
-				},
-				folders: []ds.Folder{
-					{ID: "tha drive", Name: "Not a Shared Drive", Trashed: false},
-				},
-			},
-		},
-		{
-			// files and folders should stay because of the transaction rollback
-			name: "Data anomaly when children do not get deleted",
-			err:  ds.ErrDataAnomaly,
-			given: State{
-				drive: ds.Drive{
-					ID:        "tha drive",
-					PageToken: "old",
-					Name:      "Not a Shared Drive",
-				},
-				folders: []ds.Folder{
-					{ID: "A", Parent: "tha drive"},
-					{ID: "B", Parent: "A"},
-				},
-				files: []ds.File{
-					{ID: "Z", Parent: "A"},
-					{ID: "Y", Parent: "B"},
-				},
-			},
-			changes: Changed{
-				drive: ds.Drive{
-					ID:        "tha drive",
-					PageToken: "new",
-				},
-				removed: []string{"A"},
-			},
-			expected: State{
-				drive: ds.Drive{
-					ID:        "tha drive",
-					PageToken: "old",
-				},
-				folders: []ds.Folder{
-					{ID: "tha drive", Name: "Not a Shared Drive", Trashed: false},
-					{ID: "A", Parent: "tha drive"},
-					{ID: "B", Parent: "A"},
-				},
-				files: []ds.File{
-					{ID: "Z", Parent: "A"},
-					{ID: "Y", Parent: "B"},
-				},
-			},
-		},
-		{
 			name: "Shared Drive name change",
 			err:  nil,
 			given: State{
@@ -443,36 +342,6 @@ func TestPartialSync(t *testing.T) {
 				},
 				folders: []ds.Folder{
 					{ID: "Shared Drive", Name: "New name"},
-				},
-			},
-		},
-		{
-			name: "Data anomaly",
-			err:  ds.ErrDataAnomaly,
-			given: State{
-				drive: ds.Drive{
-					ID:        "root",
-					PageToken: "0",
-					Name:      "Data anomaly test",
-				},
-			},
-			changes: Changed{
-				drive: ds.Drive{
-					ID:        "root",
-					PageToken: "new pageToken",
-					Name:      "New name which should not be updated",
-				},
-				files: []ds.File{
-					{ID: "Z", Parent: "Non existent"},
-				},
-			},
-			expected: State{
-				drive: ds.Drive{
-					ID:        "root",
-					PageToken: "0",
-				},
-				folders: []ds.Folder{
-					{ID: "root", Name: "Data anomaly test"},
 				},
 			},
 		},
