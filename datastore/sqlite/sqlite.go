@@ -5,13 +5,20 @@ package sqlite
 
 import (
 	"database/sql"
+	"embed"
 	"fmt"
 	"strings"
 
 	ds "github.com/l3uddz/bernard/datastore"
+	"github.com/l3uddz/bernard/migrate"
 
 	// database driver
 	_ "modernc.org/sqlite"
+)
+
+var (
+	//go:embed migrations
+	migrations embed.FS
 )
 
 // New returns a Bernard Datastore with a SQLite3 backend.
@@ -21,8 +28,14 @@ func New(path string) (*Datastore, error) {
 		return nil, fmt.Errorf("open: %w", ds.ErrDatabase)
 	}
 
-	if _, err := db.Exec(Schema); err != nil {
-		return nil, fmt.Errorf("schema: %w", ds.ErrDatabase)
+	// migrations
+	mg, err := migrate.New(db, "migrations")
+	if err != nil {
+		return nil, fmt.Errorf("%v: %w", err, ds.ErrDatabase)
+	}
+
+	if err := mg.Migrate(&migrations, "processor"); err != nil {
+		return nil, fmt.Errorf("%v: %w", err, ds.ErrDatabase)
 	}
 
 	return &Datastore{DB: db}, nil
@@ -30,8 +43,14 @@ func New(path string) (*Datastore, error) {
 
 // FromDB returns a Bernard Datastore with the given SQLite3 backend.
 func FromDB(db *sql.DB) (*Datastore, error) {
-	if _, err := db.Exec(Schema); err != nil {
-		return nil, fmt.Errorf("schema: %w", ds.ErrDatabase)
+	// migrations
+	mg, err := migrate.New(db, "migrations")
+	if err != nil {
+		return nil, fmt.Errorf("%v: %w", err, ds.ErrDatabase)
+	}
+
+	if err := mg.Migrate(&migrations, "processor"); err != nil {
+		return nil, fmt.Errorf("%v: %w", err, ds.ErrDatabase)
 	}
 
 	return &Datastore{DB: db}, nil
@@ -256,37 +275,6 @@ func (store *Datastore) PageToken(driveID string) (string, error) {
 
 	return pageToken, nil
 }
-
-// Schema of the sqlite database
-const Schema string = `
-PRAGMA foreign_keys=ON;
-
-CREATE TABLE IF NOT EXISTS file (
-	"id" text NOT NULL,
-	"drive" text NOT NULL,
-	"name" text NOT NULL,
-	"parent" text NOT NULL,
-	"size" integer NOT NULL,
-	"md5" text NOT NULL,
-	"trashed" boolean NOT NULL,
-	PRIMARY KEY(id, drive)
-);
-
-CREATE TABLE IF NOT EXISTS folder (
-	"id" text NOT NULL,
-	"drive" text NOT NULL,
-  "name" text NOT NULL,
-  "trashed" boolean NOT NULL,
-	"parent" text,
-	PRIMARY KEY(id, drive)
-);
-
-CREATE TABLE IF NOT EXISTS drive (
-	"id" text NOT NULL,
-	"pageToken" text NOT NULL,
-	PRIMARY KEY(id)
-)
-`
 
 const sqlUpsertDrive = `
 INSERT INTO drive (id, pageToken) VALUES (?, ?)

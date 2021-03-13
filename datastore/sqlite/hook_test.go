@@ -206,17 +206,6 @@ func TestDifferenceHook(t *testing.T) {
 			},
 			expected: &Difference{},
 		},
-		{
-			name: "data anomaly on non-existent removed item",
-			err:  ds.ErrDataAnomaly,
-			store: Store{
-				drive: drive,
-			},
-			changes: Changes{
-				removed: []string{"A"},
-			},
-			expected: &Difference{},
-		},
 	}
 
 	for _, tc := range testCases {
